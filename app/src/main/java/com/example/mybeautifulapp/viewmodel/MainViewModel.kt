@@ -9,6 +9,7 @@ import com.example.mybeautifulapp.data.model.BeanItem
 import com.example.mybeautifulapp.data.repository.BeanRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,8 +23,8 @@ class MainViewModel @Inject constructor(
     val allBeanList: LiveData<List<BeanItem>> = _allBeanList
 
 
-    fun getAllBeanItems() = viewModelScope.launch(Dispatchers.IO) {
-        beanRepository.getBeanItem().collect {
+    fun getAllBeanItems() = viewModelScope.launch(Dispatchers.Main) {
+        beanRepository.getBeanItem().flowOn(Dispatchers.IO).collect {
             _allBeanList.value = it
         }
     }
